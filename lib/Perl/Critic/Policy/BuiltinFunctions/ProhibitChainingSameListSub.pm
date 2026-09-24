@@ -103,7 +103,7 @@ sub supported_parameters {
 =cut
 
 sub initialize_if_enabled {
-    my ( $self, $config ) = @_;
+    my ($self) = @_;
     $self->{_functions} = { map { $_ => 1 } @DEFAULT_FUNCTIONS, keys %{ $self->{_functions} // {} } };
     return 1;
 }
