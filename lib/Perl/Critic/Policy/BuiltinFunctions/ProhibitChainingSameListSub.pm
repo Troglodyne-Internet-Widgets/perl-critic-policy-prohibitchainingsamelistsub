@@ -144,8 +144,9 @@ sub violates {
 sub _listed {
     my ( $self, $word ) = @_;
 
-    my $name = $word->content;
-    return $name if $self->{_functions}{$name} || $self->{_functions}{ _bare($name) };
+    my $name      = $word->content;
+    my $functions = $self->{_functions};
+    return $name if $functions->{$name} || $functions->{ _bare($name) };
     return;
 }
 
@@ -163,9 +164,10 @@ sub _first_of_list {
     my ( $next, $call ) = @_;
     return unless $next;
 
-    if ( $next->isa('PPI::Structure::List') ) {
+    # Parentheses: the list starts inside them.
+    while ( $next->isa('PPI::Structure::List') ) {
         my $expr = $next->schild(0) or return;
-        return _first_of_list( $expr->schild(0), $call );
+        $next = $expr->schild(0) or return;
     }
 
     return $next->snext_sibling if $next->isa('PPI::Structure::Block');
